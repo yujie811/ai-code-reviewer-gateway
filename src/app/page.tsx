@@ -89,6 +89,41 @@ export default function Home() {
 
   const isLight = theme.name === 'Light';
 
+  const reportTypography = {
+    fontFamily: '"Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
+    letterSpacing: '-0.01em',
+  };
+
+  const markdownComponents = {
+    h2: ({ children }: { children: React.ReactNode }) => (
+      <h2 style={{
+        fontSize: '1rem', fontWeight: 600, textTransform: 'uppercase' as const,
+        letterSpacing: '0.05em', marginTop: '1.5em', marginBottom: '0.5em',
+        color: theme.text, borderBottom: `1px solid ${theme.border}`, paddingBottom: '0.5em'
+      }}>{children}</h2>
+    ),
+    h3: ({ children }: { children: React.ReactNode }) => (
+      <h3 style={{
+        fontSize: '0.9rem', fontWeight: 500, marginTop: '1.2em', marginBottom: '0.3em',
+        color: theme.text
+      }}>{children}</h3>
+    ),
+    p: ({ children }: { children: React.ReactNode }) => (
+      <p style={{
+        marginBottom: '0.8em', lineHeight: 1.7, color: theme.sub
+      }}>{children}</p>
+    ),
+    strong: ({ children }: { children: React.ReactNode }) => (
+      <strong style={{ fontWeight: 600, color: theme.text }}>{children}</strong>
+    ),
+    code: ({ children }: { children: React.ReactNode }) => (
+      <code style={{
+        backgroundColor: theme.border, padding: '0.15em 0.4em', borderRadius: 4,
+        fontSize: '0.85em', fontFamily: '"SF Mono", "Fira Code", "Consolas", monospace'
+      }}>{children}</code>
+    ),
+  };
+
   return (
     <div
       className="relative min-h-screen font-sans overflow-hidden transition-colors duration-700"
@@ -104,7 +139,6 @@ export default function Home() {
       {/* ========== 历史详情页 ========== */}
       {selectedHistory ? (
         <div className="relative z-10 max-w-3xl mx-auto px-6 py-20 animate-in fade-in slide-in-from-top-4 duration-500">
-          {/* 顶部导航 */}
           <div className="flex items-center justify-between mb-8">
             <button
               onClick={backToEditor}
@@ -125,7 +159,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 代码区 */}
           <h3 className="text-sm font-medium uppercase tracking-widest mb-3" style={{ color: theme.sub }}>Source Code</h3>
           <div className="rounded-2xl overflow-hidden border mb-8" style={{ backgroundColor: theme.surface, borderColor: theme.border }}>
             <div className="flex items-center gap-2 px-5 py-3 border-b" style={{ borderColor: theme.border }}>
@@ -138,16 +171,19 @@ export default function Home() {
             </pre>
           </div>
 
-          {/* 结果区 */}
           <h3 className="text-sm font-medium uppercase tracking-widest mb-3" style={{ color: theme.sub }}>Review Report</h3>
-          <div className="rounded-2xl p-8 border prose max-w-none text-sm leading-relaxed" style={{ backgroundColor: theme.surface, borderColor: theme.border, color: theme.text }}>
-            <ReactMarkdown>{selectedHistory.result}</ReactMarkdown>
+          <div
+            className="rounded-2xl p-8 border max-w-none text-sm leading-relaxed"
+            style={{ backgroundColor: theme.surface, borderColor: theme.border, ...reportTypography }}
+          >
+            <ReactMarkdown components={markdownComponents}>
+              {selectedHistory.result}
+            </ReactMarkdown>
           </div>
         </div>
       ) : (
         /* ========== 主页 ========== */
         <main className="relative max-w-3xl mx-auto px-6 py-20">
-          {/* 头部 */}
           <div className="mb-12 flex items-end justify-between">
             <div>
               <h1 className="text-4xl font-light tracking-tight mb-3" style={{ color: isLight ? '#18181b' : '#fff' }}>
@@ -192,7 +228,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 工具栏 */}
           <div className="flex items-center gap-4 mb-4 flex-wrap">
             <div className="flex items-center rounded-full p-[3px]" style={{ backgroundColor: theme.surface, borderColor: theme.border, border: '1px solid ' + theme.border }}>
               {languages.map((lang) => (
@@ -222,7 +257,6 @@ export default function Home() {
             </button>
           </div>
 
-          {/* 代码输入区 */}
           <div className="rounded-2xl overflow-hidden transition-all duration-300 border" style={{ backgroundColor: theme.surface, borderColor: theme.border }}>
             <div className="flex items-center gap-2 px-5 py-3 border-b" style={{ borderColor: theme.border }}>
               <span className="w-3 h-3 rounded-full bg-red-500/70" />
@@ -239,12 +273,16 @@ export default function Home() {
             />
           </div>
 
-          {/* 结果区 */}
           {result && (
             <div className="mt-10 animate-in fade-in slide-in-from-top-4 duration-500">
               <h2 className="text-sm font-medium uppercase tracking-widest mb-4" style={{ color: theme.sub }}>Review Report</h2>
-              <div className="rounded-2xl p-8 border prose max-w-none text-sm leading-relaxed" style={{ backgroundColor: theme.surface, borderColor: theme.border, color: theme.text }}>
-                <ReactMarkdown>{result}</ReactMarkdown>
+              <div
+                className="rounded-2xl p-8 border max-w-none text-sm leading-relaxed"
+                style={{ backgroundColor: theme.surface, borderColor: theme.border, ...reportTypography }}
+              >
+                <ReactMarkdown components={markdownComponents}>
+                  {result}
+                </ReactMarkdown>
               </div>
             </div>
           )}
