@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer sk-c355693476bf4ab19f9be25d3737ee91',
+        'Authorization': 'Bearer YOUR_API_KEY_HERE',
       },
       body: JSON.stringify({
         model: 'qwen-turbo',
