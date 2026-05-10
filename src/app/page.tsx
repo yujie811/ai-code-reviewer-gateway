@@ -1,64 +1,122 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+
+const languages = ['javascript', 'typescript', 'python', 'java', 'go'];
 
 export default function Home() {
+  const [code, setCode] = useState('');
+  const [language, setLanguage] = useState('javascript');
+  const [result, setResult] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleReview = async () => {
+    if (!code.trim()) return;
+    setLoading(true);
+    setResult('');
+
+    try {
+      const res = await fetch('/api/review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, language }),
+      });
+      const data = await res.json();
+      setResult(data.result || '审查完成，未发现问题。');
+    } catch {
+      setResult('请求失败，请检查后端是否启动。');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div className="relative min-h-screen bg-[#0a0a0b] text-[#e5e5e5] font-sans overflow-hidden">
+      {/* 背景光晕 */}
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[120px]" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-purple-500/8 rounded-full blur-[120px]" />
+
+      <main className="relative max-w-3xl mx-auto px-6 py-20">
+        {/* 头部 */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-light tracking-tight text-white mb-3">
+            AI Code Review
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-lg text-zinc-500 font-light">
+            提交代码，即时发现 Bug · 安全漏洞 · 性能问题
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* 工具栏 */}
+        <div className="flex items-center gap-4 mb-4 flex-wrap">
+          {/* 语言切换器 */}
+          <div className="flex items-center bg-[#111114] border border-zinc-800 rounded-full p-[3px]">
+            {languages.map((lang) => (
+              <button
+                key={lang}
+                onClick={() => setLanguage(lang)}
+                className={`relative px-4 py-1.5 text-xs rounded-full font-medium transition-all duration-300 ${
+                  language === lang
+                    ? 'text-white'
+                    : 'text-zinc-600 hover:text-zinc-400'
+                }`}
+              >
+                {language === lang && (
+                  <span className="absolute inset-0 bg-white/10 rounded-full" />
+                )}
+                <span className="relative z-10">
+                  {lang === 'javascript' ? 'JS' :
+                   lang === 'typescript' ? 'TS' :
+                   lang.charAt(0).toUpperCase() + lang.slice(1)}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex-1" />
+
+          <button
+            onClick={handleReview}
+            disabled={loading || !code.trim()}
+            className="bg-white text-black px-6 py-2 rounded-full text-sm font-medium hover:bg-zinc-200 disabled:bg-zinc-800 disabled:text-zinc-600 disabled:cursor-not-allowed transition-all duration-200"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            {loading ? '审查中…' : '提交审查'}
+          </button>
         </div>
+
+        {/* 代码输入区 */}
+        <div className="bg-[#0d0d10] border border-zinc-800 rounded-2xl overflow-hidden transition-all duration-300 focus-within:border-zinc-600">
+          <div className="flex items-center gap-2 px-5 py-3 border-b border-zinc-800/50">
+            <span className="w-3 h-3 rounded-full bg-red-500/70" />
+            <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
+            <span className="w-3 h-3 rounded-full bg-green-500/70" />
+            <span className="ml-3 text-xs text-zinc-600">code-input</span>
+          </div>
+          <textarea
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="// 在此粘贴你的代码…"
+            className="w-full h-80 bg-transparent p-5 font-mono text-sm text-zinc-300 placeholder:text-zinc-700 resize-none outline-none leading-relaxed"
+          />
+        </div>
+
+        {/* 结果区 */}
+        {result && (
+          <div className="mt-10 animate-in fade-in slide-in-from-top-4 duration-500">
+            <h2 className="text-sm font-medium text-zinc-500 uppercase tracking-widest mb-4">
+              审查报告
+            </h2>
+            <div className="bg-[#0d0d10] border border-zinc-800 rounded-2xl p-8 prose prose-invert prose-zinc max-w-none text-sm leading-relaxed">
+              <ReactMarkdown>{result}</ReactMarkdown>
+            </div>
+          </div>
+        )}
+
+        {/* 底部 */}
+        <p className="mt-20 text-center text-xs text-zinc-800 font-light">
+          AI Code Reviewer · 安全网关版
+        </p>
       </main>
     </div>
   );
