@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛡️ AI Code Reviewer with Security Gateway
 
-## Getting Started
+> An AI-powered code review tool with a built-in **security gateway** that sanitizes input before sending it to the LLM.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)
+![Tailwind](https://img.shields.io/badge/Tailwind-4.0-06b6d4?logo=tailwindcss)
+![License](https://img.shields.io/badge/License-MIT-green)
+
+---
+
+## ✨ Features
+
+- 🔍 **AI Code Review** — Submit code and get instant feedback on bugs, security issues, and performance
+- 🛡️ **Security Gateway** — Sensitive data redaction + Prompt injection detection before LLM call
+- 📊 **Audit Logging** — Every API call is logged with warnings from the gateway
+- 🎨 **Minimal Design** — Clean, modern UI inspired by OpenAI & ByteDance
+- 🌐 **Multi-language** — Supports JavaScript, TypeScript, Python, Java, and Go
+
+---
+
+## 🏗️ Architecture
+User Input → Security Gateway → LLM API → Structured Report
+│
+├── Sensitive Info Redaction (API keys, tokens, passwords)
+├── Prompt Injection Detection
+└── Length Limiting
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- A DashScope API Key ([get one here](https://dashscope.aliyun.com))
+
+### Setup
 
 ```bash
+git clone https://github.com/yujie811/ai-code-reviewer-gateway.git
+cd ai-code-reviewer-gateway
+npm install
+
+Create a .env file:
+DASHSCOPE_API_KEY=sk-your-api-key
+Then run:
+
+bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🧩 Tech Stack
+Layer	Technology
+Frontend	Next.js 16, React 19, Tailwind CSS 4
+Backend	Next.js API Routes
+AI	Qwen-Turbo (DashScope / Alibaba Cloud)
+Security	Custom Gateway Layer (input sanitization)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+📁 Project Structure
+src/
+├── app/
+│   ├── api/
+│   │   └── review/
+│   │       └── route.ts    # API endpoint + gateway integration
+│   ├── layout.tsx
+│   └── page.tsx            # Main UI
+└── lib/
+    └── gateway.ts          # Security gateway logic
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+🔒 Security Gateway Details
+All code submitted for review passes through a security gateway that:
 
-To learn more about Next.js, take a look at the following resources:
+Redacts — Detects and masks API keys, tokens, passwords, and private keys
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Detects — Identifies prompt injection attempts (e.g., "ignore previous instructions")
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Limits — Truncates code exceeding 1500 lines to prevent abuse
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+📄 License
+MIT
