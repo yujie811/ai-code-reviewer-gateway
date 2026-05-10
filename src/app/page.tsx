@@ -89,40 +89,46 @@ export default function Home() {
 
   const isLight = theme.name === 'Light';
 
-  const reportTypography = {
+  const reportStyle = {
     fontFamily: '"Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif',
     letterSpacing: '-0.01em',
   };
 
-  const markdownComponents = {
-    h2: ({ children }: { children: React.ReactNode }) => (
-      <h2 style={{
-        fontSize: '1rem', fontWeight: 600, textTransform: 'uppercase' as const,
-        letterSpacing: '0.05em', marginTop: '1.5em', marginBottom: '0.5em',
-        color: theme.text, borderBottom: `1px solid ${theme.border}`, paddingBottom: '0.5em'
-      }}>{children}</h2>
-    ),
-    h3: ({ children }: { children: React.ReactNode }) => (
-      <h3 style={{
-        fontSize: '0.9rem', fontWeight: 500, marginTop: '1.2em', marginBottom: '0.3em',
-        color: theme.text
-      }}>{children}</h3>
-    ),
-    p: ({ children }: { children: React.ReactNode }) => (
-      <p style={{
-        marginBottom: '0.8em', lineHeight: 1.7, color: theme.sub
-      }}>{children}</p>
-    ),
-    strong: ({ children }: { children: React.ReactNode }) => (
-      <strong style={{ fontWeight: 600, color: theme.text }}>{children}</strong>
-    ),
-    code: ({ children }: { children: React.ReactNode }) => (
-      <code style={{
-        backgroundColor: theme.border, padding: '0.15em 0.4em', borderRadius: 4,
-        fontSize: '0.85em', fontFamily: '"SF Mono", "Fira Code", "Consolas", monospace'
-      }}>{children}</code>
-    ),
-  };
+  const renderMarkdown = (content: string) => (
+    <ReactMarkdown
+      components={{
+        h2: ({ children }) => (
+          <h2 style={{
+            fontSize: '1rem', fontWeight: 600, textTransform: 'uppercase' as const,
+            letterSpacing: '0.05em', marginTop: '1.5em', marginBottom: '0.5em',
+            color: theme.text, borderBottom: `1px solid ${theme.border}`, paddingBottom: '0.5em'
+          }}>{children}</h2>
+        ),
+        h3: ({ children }) => (
+          <h3 style={{
+            fontSize: '0.9rem', fontWeight: 500, marginTop: '1.2em', marginBottom: '0.3em',
+            color: theme.text
+          }}>{children}</h3>
+        ),
+        p: ({ children }) => (
+          <p style={{
+            marginBottom: '0.8em', lineHeight: 1.7, color: theme.sub
+          }}>{children}</p>
+        ),
+        strong: ({ children }) => (
+          <strong style={{ fontWeight: 600, color: theme.text }}>{children}</strong>
+        ),
+        code: ({ children }) => (
+          <code style={{
+            backgroundColor: theme.border, padding: '0.15em 0.4em', borderRadius: 4,
+            fontSize: '0.85em', fontFamily: '"SF Mono", "Fira Code", "Consolas", monospace'
+          }}>{children}</code>
+        ),
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
 
   return (
     <div
@@ -174,11 +180,9 @@ export default function Home() {
           <h3 className="text-sm font-medium uppercase tracking-widest mb-3" style={{ color: theme.sub }}>Review Report</h3>
           <div
             className="rounded-2xl p-8 border max-w-none text-sm leading-relaxed"
-            style={{ backgroundColor: theme.surface, borderColor: theme.border, ...reportTypography }}
+            style={{ backgroundColor: theme.surface, borderColor: theme.border, ...reportStyle }}
           >
-            <ReactMarkdown components={markdownComponents}>
-              {selectedHistory.result}
-            </ReactMarkdown>
+            {renderMarkdown(selectedHistory.result)}
           </div>
         </div>
       ) : (
@@ -278,11 +282,9 @@ export default function Home() {
               <h2 className="text-sm font-medium uppercase tracking-widest mb-4" style={{ color: theme.sub }}>Review Report</h2>
               <div
                 className="rounded-2xl p-8 border max-w-none text-sm leading-relaxed"
-                style={{ backgroundColor: theme.surface, borderColor: theme.border, ...reportTypography }}
+                style={{ backgroundColor: theme.surface, borderColor: theme.border, ...reportStyle }}
               >
-                <ReactMarkdown components={markdownComponents}>
-                  {result}
-                </ReactMarkdown>
+                {renderMarkdown(result)}
               </div>
             </div>
           )}
