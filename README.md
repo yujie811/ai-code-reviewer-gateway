@@ -41,23 +41,27 @@ User Input → Security Gateway → LLM API → Structured Report
 git clone https://github.com/yujie811/ai-code-reviewer-gateway.git
 cd ai-code-reviewer-gateway
 npm install
+```
 
-Create a .env file:
+### Create a .env file:
 DASHSCOPE_API_KEY=sk-your-api-key
 Then run:
-
-bash
+```bash
 npm run dev
 Open http://localhost:3000.
+```
+---
 
-🧩 Tech Stack
+## 🧩 Tech Stack
 Layer	Technology
 Frontend	Next.js 16, React 19, Tailwind CSS 4
 Backend	Next.js API Routes
 AI	Qwen-Turbo (DashScope / Alibaba Cloud)
 Security	Custom Gateway Layer (input sanitization)
 
-📁 Project Structure
+---
+
+## 📁 Project Structure
 src/
 ├── app/
 │   ├── api/
@@ -68,8 +72,9 @@ src/
 └── lib/
     └── gateway.ts          # Security gateway logic
 
+---
 
-🔒 Security Gateway Details
+## 🔒 Security Gateway Details
 All code submitted for review passes through a security gateway that:
 
 Redacts — Detects and masks API keys, tokens, passwords, and private keys
@@ -78,5 +83,7 @@ Detects — Identifies prompt injection attempts (e.g., "ignore previous instruc
 
 Limits — Truncates code exceeding 1500 lines to prevent abuse
 
-📄 License
+---
+
+## 📄 License
 MIT
